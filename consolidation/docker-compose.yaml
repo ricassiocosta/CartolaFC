@@ -5,7 +5,6 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: courses
-      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: cartola
     ports:
       - "3306:3306"

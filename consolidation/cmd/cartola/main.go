@@ -3,10 +3,14 @@ package main
 import (
 	"context"
 	"database/sql"
+	"net/http"
 
 	"github.com/ricassiocosta/consolidation/internal/infra/db"
+	handlers "github.com/ricassiocosta/consolidation/internal/infra/http"
 	"github.com/ricassiocosta/consolidation/internal/infra/repository"
 	"github.com/ricassiocosta/consolidation/pkg/uow"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
@@ -23,6 +27,11 @@ func main() {
 	}
 
 	registerRepositories(uow)
+
+	http.HandleFunc("/players", handlers.ListPlayersHandler(ctx, *db.New(dtb)))
+
+	http.ListenAndServe(":8080", nil)
+
 }
 
 func registerRepositories(uow *uow.Uow) {
