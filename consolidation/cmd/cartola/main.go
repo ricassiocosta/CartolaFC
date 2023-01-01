@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"net/http"
 
+	"github.com/go-chi/chi"
 	"github.com/ricassiocosta/consolidation/internal/infra/db"
 	handlers "github.com/ricassiocosta/consolidation/internal/infra/http"
 	"github.com/ricassiocosta/consolidation/internal/infra/repository"
@@ -28,10 +29,11 @@ func main() {
 
 	registerRepositories(uow)
 
-	http.HandleFunc("/players", handlers.ListPlayersHandler(ctx, *db.New(dtb)))
+	r := chi.NewRouter()
+	r.Get("/players", handlers.ListPlayersHandler(ctx, *db.New(dtb)))
+	r.Get("/my-teams/{teamID}/players", handlers.ListMyTeamPlayers(ctx, *db.New(dtb)))
 
-	http.ListenAndServe(":8080", nil)
-
+	http.ListenAndServe(":8080", r)
 }
 
 func registerRepositories(uow *uow.Uow) {
